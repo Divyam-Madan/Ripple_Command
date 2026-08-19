@@ -145,3 +145,19 @@ export interface WSEvent {
   type: 'SHIPMENT_STATUS_CHANGE' | 'DISRUPTION_DETECTED' | 'KPI_UPDATE' | 'SIMULATION_COMPLETE' | 'RECOMMENDATION_UPDATE';
   payload: Record<string, unknown>;
 }
+
+export type UserRole = 'supply_chain_manager' | 'operations_manager' | 'analyst';
+
+export interface UserProfile {
+  id: string;
+  name: string;
+  email: string;
+  role: UserRole;
+  roleTitle: string;
+  department: string;
+  initials: string;
+  avatarUrl?: string;
+  primaryMetric: string;
+  recommendedRoute: string;
+  responsibilities: string[];
+}

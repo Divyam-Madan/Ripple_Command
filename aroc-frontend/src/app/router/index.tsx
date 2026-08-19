@@ -1,5 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom';
 import AppShell from '@/components/layout/AppShell';
+import LoginPage from '@/features/auth/LoginPage';
 import DashboardPage from '@/features/dashboard/DashboardPage';
 import DigitalTwinPage from '@/features/digital-twin/DigitalTwinPage';
 import ShipmentsPage from '@/features/shipments/ShipmentsPage';
@@ -11,6 +12,10 @@ import EntitiesPage from '@/features/entities/EntitiesPage';
 import AdminPage from '@/features/admin/AdminPage';
 
 export const router = createBrowserRouter([
+  {
+    path: '/login',
+    element: <LoginPage />,
+  },
   {
     path: '/',
     element: <AppShell />,
@@ -27,3 +32,4 @@ export const router = createBrowserRouter([
   },
   { path: '/admin', element: <AdminPage /> },
 ]);
+

@@ -1,8 +1,15 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, Navigate } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Header from './Header';
+import { useAuthStore } from '@/stores/authStore';
 
 export default function AppShell() {
+  const { isAuthenticated } = useAuthStore();
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
   return (
     <div className="flex h-screen text-stone-900 overflow-hidden relative selection:bg-accent/20">
       {/* Subtle light background glow effects */}
@@ -25,3 +32,4 @@ export default function AppShell() {
     </div>
   );
 }
+
