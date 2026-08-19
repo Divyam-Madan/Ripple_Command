@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/stores/authStore';
+import { useCopilotStore } from '@/stores/copilotStore';
 import { DEMO_ROLES } from '@/lib/auth/roles';
 import type { UserRole } from '@/types';
 
@@ -10,6 +11,7 @@ export default function Header() {
   const path = location.pathname.split('/')[1] || 'dashboard';
 
   const { user, switchRole, logout } = useAuthStore();
+  const { isOpen: copilotOpen, toggleOpen: toggleCopilot } = useCopilotStore();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -48,16 +50,26 @@ export default function Header() {
       
       {/* Right: Status Badges & Profile Dropdown */}
       <div className="flex items-center gap-4 md:gap-6">
-        <div className="hidden lg:flex items-center gap-4 text-[11px] font-bold tracking-widest text-stone-700 uppercase">
-          <span className="flex items-center gap-2">
+        <div className="hidden lg:flex items-center gap-3 text-[11px] font-bold tracking-widest text-stone-700 uppercase">
+          <span className="flex items-center gap-2 bg-white/40 px-3 py-1.5 rounded-xl border border-white/40">
             <span className="w-2 h-2 rounded-full bg-status-healthy animate-pulse-glow" />
             <span>Model Synced</span>
           </span>
-          <span className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse-glow" />
-            <span>AI Copilot Online</span>
-          </span>
+          
+          <button
+            onClick={toggleCopilot}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border transition-all duration-200 cursor-pointer shadow-sm ${
+              copilotOpen
+                ? 'bg-blue-600 text-white border-blue-500 font-black'
+                : 'bg-white/60 hover:bg-white text-stone-800 border-white/60 font-bold'
+            }`}
+          >
+            <span className={`w-2 h-2 rounded-full ${copilotOpen ? 'bg-white' : 'bg-blue-600'} animate-pulse-glow`} />
+            <span>AI Copilot {copilotOpen ? 'Active' : 'Offline'}</span>
+            <span className="text-[10px] font-mono opacity-80 font-normal">({copilotOpen ? 'Docked' : 'Open'})</span>
+          </button>
         </div>
+
 
         <div className="w-px h-4 bg-stone-300 hidden lg:block" />
 

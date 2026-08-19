@@ -1,6 +1,7 @@
 import { Outlet, Navigate } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Header from './Header';
+import CopilotSidebar from '@/components/copilot/CopilotSidebar';
 import { useAuthStore } from '@/stores/authStore';
 
 export default function AppShell() {
@@ -24,12 +25,18 @@ export default function AppShell() {
       <div className="flex-1 flex flex-col min-w-0 h-full relative z-10 pt-4 pr-4 pb-4">
         <div className="glass-panel flex-1 flex flex-col rounded-2xl overflow-hidden shadow-2xl relative">
           <Header />
-          <main className="flex-1 overflow-auto p-8 custom-scrollbar">
-            <Outlet />
-          </main>
+          <div className="flex-1 flex min-h-0 overflow-hidden">
+            <main className="flex-1 overflow-auto p-6 md:p-8 custom-scrollbar min-w-0">
+              <Outlet />
+            </main>
+            <div className="p-3 pl-0 flex h-full">
+              <CopilotSidebar />
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
 }
+
 
