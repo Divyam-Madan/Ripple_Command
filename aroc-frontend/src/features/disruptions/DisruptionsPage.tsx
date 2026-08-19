@@ -3,10 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { apiClient } from '@/lib/api/client';
 
 const severityConfig: Record<string, { label: string; classes: string }> = {
-  critical: { label: 'CRITICAL', classes: 'text-status-critical bg-red-950/30 border-red-900/40' },
-  high:     { label: 'HIGH',     classes: 'text-status-warning bg-amber-950/30 border-amber-900/40' },
-  medium:   { label: 'MEDIUM',  classes: 'text-blue-700 bg-blue-950/30 border-blue-900/40' },
-  low:      { label: 'LOW',     classes: 'text-stone-300 bg-surface-3 border-border' },
+  critical: { label: 'CRITICAL', classes: 'text-red-800 bg-red-500/15 border-red-500/30' },
+  high:     { label: 'HIGH',     classes: 'text-amber-800 bg-amber-500/15 border-amber-500/30' },
+  medium:   { label: 'MEDIUM',   classes: 'text-blue-800 bg-blue-500/15 border-blue-500/30' },
+  low:      { label: 'LOW',      classes: 'text-stone-800 bg-stone-500/15 border-stone-400/30' },
 };
 
 export default function DisruptionsPage() {
@@ -19,111 +19,111 @@ export default function DisruptionsPage() {
   });
 
   if (isLoading) return (
-    <div className="flex items-center gap-3 p-8 text-stone-300 text-sm font-mono">
-      <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+    <div className="flex items-center gap-3 p-8 text-stone-900 text-sm font-mono font-bold">
+      <div className="w-2.5 h-2.5 rounded-full bg-blue-600 animate-ping" />
       Loading disruption registry...
     </div>
   );
   if (isError) return (
     <div className="p-8">
-      <p className="text-status-critical text-sm mb-3">Failed to load disruption data.</p>
-      <button onClick={() => refetch()} className="text-xs text-blue-700 border border-border px-3 py-1.5 rounded-sm">Retry</button>
+      <p className="text-red-700 text-sm font-bold mb-3">Failed to load disruption data.</p>
+      <button onClick={() => refetch()} className="text-xs font-black text-white bg-blue-600 px-4 py-2 rounded-xl shadow">Retry</button>
     </div>
   );
 
   const active = (disruptions || []).filter((d: any) => d.status === 'active');
   const resolved = (disruptions || []).filter((d: any) => d.status !== 'active');
+  const totalExposure = (disruptions || []).reduce((s: number, d: any) => s + (d.financial_exposure || 0), 0);
 
   return (
     <div className="max-w-[1000px] space-y-6">
-      {/* Summary row */}
-      <div className="flex gap-4">
-        <div className="bg-surface-2 border border-border rounded-sm px-4 py-3 text-sm">
-          <span className="text-stone-400 font-mono text-xs">Active</span>
-          <div className="text-xl font-bold text-status-warning mt-0.5">{active.length}</div>
+      {/* Summary KPI row */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="glass-panel border border-white/50 rounded-2xl p-5 shadow-lg">
+          <span className="text-stone-600 font-extrabold uppercase tracking-wider text-[11px]">Active Disruptions</span>
+          <div className="text-3xl font-black text-amber-700 mt-1">{active.length}</div>
         </div>
-        <div className="bg-surface-2 border border-border rounded-sm px-4 py-3 text-sm">
-          <span className="text-stone-400 font-mono text-xs">Resolved</span>
-          <div className="text-xl font-bold text-status-healthy mt-0.5">{resolved.length}</div>
+        <div className="glass-panel border border-white/50 rounded-2xl p-5 shadow-lg">
+          <span className="text-stone-600 font-extrabold uppercase tracking-wider text-[11px]">Resolved Events</span>
+          <div className="text-3xl font-black text-emerald-800 mt-1">{resolved.length}</div>
         </div>
-        <div className="bg-surface-2 border border-border rounded-sm px-4 py-3 text-sm">
-          <span className="text-stone-400 font-mono text-xs">Total Exposure</span>
-          <div className="text-xl font-bold text-status-critical mt-0.5 font-mono">
-            ₹{(disruptions || []).reduce((s: number, d: any) => s + (d.financial_exposure || 0), 0).toLocaleString('en-IN')}
+        <div className="glass-panel border border-white/50 rounded-2xl p-5 shadow-lg">
+          <span className="text-stone-600 font-extrabold uppercase tracking-wider text-[11px]">Total Exposure</span>
+          <div className="text-3xl font-black text-red-700 mt-1 font-mono">
+            ₹{totalExposure.toLocaleString('en-IN')}
           </div>
         </div>
       </div>
 
       {/* Active Disruptions */}
       {active.length > 0 && (
-        <section>
-          <h3 className="text-xs font-mono uppercase tracking-widest text-stone-400 mb-3">Active Disruptions</h3>
-          <div className="space-y-2">
-            {active.map((d: any) => <DisruptionCard key={d.id} disruption={d} onSimulate={() => navigate('/simulation')} />)}
+        <section className="space-y-3">
+          <h3 className="text-xs font-black uppercase tracking-wider text-stone-800">Live Active Disruptions</h3>
+          <div className="space-y-3">
+            {active.map((d: any) => {
+              const sev = severityConfig[d.severity] || severityConfig.medium;
+
+              return (
+                <div
+                  key={d.id}
+                  className="glass-panel bg-white/80 hover:bg-white/95 border border-white/60 rounded-2xl p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-md transition-all"
+                >
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                      <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-md border ${sev.classes}`}>
+                        {sev.label}
+                      </span>
+                      <span className="text-xs font-mono font-black text-stone-600 uppercase">
+                        {d.disruption_type.replace(/_/g, ' ')}
+                      </span>
+                      <span className="text-xs font-mono font-bold text-stone-500">
+                        &bull; Started {new Date(d.started_at).toLocaleDateString('en-IN')}
+                      </span>
+                    </div>
+
+                    <h4 className="text-base font-black text-stone-950">{d.title}</h4>
+                    <p className="text-xs font-semibold text-stone-700 mt-1 leading-relaxed">{d.description}</p>
+
+                    <div className="flex items-center gap-4 mt-3 text-xs font-bold text-stone-800">
+                      {d.estimated_delay_hours && (
+                        <span>Est. Delay: <strong className="text-red-700 font-mono font-black">{d.estimated_delay_hours}h</strong></span>
+                      )}
+                      {d.financial_exposure && (
+                        <span>Exposure: <strong className="text-red-700 font-mono font-black">₹{d.financial_exposure.toLocaleString('en-IN')}</strong></span>
+                      )}
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => navigate('/simulation')}
+                    className="shrink-0 px-4 py-2 text-xs font-black rounded-xl bg-stone-900 text-white hover:bg-black transition-all shadow-md"
+                  >
+                    Simulate Impact &rarr;
+                  </button>
+                </div>
+              );
+            })}
           </div>
         </section>
       )}
 
-      {active.length === 0 && (
-        <div className="bg-surface-2 border border-border rounded-sm p-8 text-center">
-          <div className="text-status-healthy text-sm mb-1">No active disruptions</div>
-          <div className="text-stone-400 text-xs font-mono">Supply chain operating within normal parameters.</div>
-        </div>
-      )}
-
-      {/* Resolved */}
+      {/* Resolved Disruptions */}
       {resolved.length > 0 && (
-        <section>
-          <h3 className="text-xs font-mono uppercase tracking-widest text-stone-400 mb-3">Resolved / Historical</h3>
-          <div className="space-y-2">
-            {resolved.map((d: any) => <DisruptionCard key={d.id} disruption={d} onSimulate={() => navigate('/simulation')} />)}
+        <section className="space-y-3">
+          <h3 className="text-xs font-black uppercase tracking-wider text-stone-700">Resolved Incident History</h3>
+          <div className="space-y-2.5">
+            {resolved.map((d: any) => (
+              <div key={d.id} className="glass-panel bg-white/50 border border-white/40 rounded-xl p-4 flex items-center justify-between text-xs text-stone-800 font-bold">
+                <div>
+                  <span className="font-black text-stone-950">{d.title}</span>
+                  <span className="text-stone-500 ml-2">&bull; {d.disruption_type}</span>
+                </div>
+                <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-800">Resolved</span>
+              </div>
+            ))}
           </div>
         </section>
       )}
-    </div>
-  );
-}
-
-function DisruptionCard({ disruption: d, onSimulate }: { disruption: any; onSimulate: () => void }) {
-  const sev = severityConfig[d.severity] || severityConfig.low;
-  return (
-    <div className="bg-surface-2 border border-border rounded-sm p-4">
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1.5">
-            <span className={`text-xs font-mono px-2 py-0.5 rounded-sm border ${sev.classes}`}>
-              {sev.label}
-            </span>
-            <span className="text-xs font-mono text-stone-400">{d.disruption_type?.replace(/_/g, ' ')}</span>
-            <span className={`text-xs font-mono ml-auto ${d.status === 'active' ? 'text-status-warning' : 'text-status-healthy'}`}>
-              {d.status?.toUpperCase()}
-            </span>
-          </div>
-          <h4 className="text-sm font-semibold text-stone-100">{d.title}</h4>
-          <p className="text-xs text-stone-300 mt-1 leading-relaxed">{d.description}</p>
-          <div className="flex gap-4 mt-2 text-xs font-mono">
-            {d.estimated_delay_hours > 0 && (
-              <span className="text-stone-300">Delay: <span className="text-status-warning">{d.estimated_delay_hours}h</span></span>
-            )}
-            {d.financial_exposure > 0 && (
-              <span className="text-stone-300">Exposure: <span className="text-status-critical">₹{d.financial_exposure?.toLocaleString('en-IN')}</span></span>
-            )}
-            {d.started_at && (
-              <span className="text-stone-400">
-                {new Date(d.started_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
-              </span>
-            )}
-          </div>
-        </div>
-        {d.status === 'active' && (
-          <button
-            onClick={onSimulate}
-            className="shrink-0 text-xs font-mono text-blue-700 border border-accent/30 px-3 py-1.5 rounded-sm hover:bg-blue-950/20 transition-colors"
-          >
-            Simulate
-          </button>
-        )}
-      </div>
     </div>
   );
 }

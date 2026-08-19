@@ -14,12 +14,16 @@ const chartTheme = {
 
 function ChartCard({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="bg-surface-2 border border-border rounded-sm p-4">
-      <div className="text-xs font-mono uppercase tracking-widest text-stone-400 mb-4">{title}</div>
+    <div className="glass-panel bg-white/80 border border-white/60 rounded-2xl p-6 shadow-xl">
+      <div className="text-sm font-black text-stone-950 uppercase tracking-wider mb-5 flex items-center gap-2">
+        <span className="w-1.5 h-4 bg-blue-600 rounded-full" />
+        <span>{title}</span>
+      </div>
       {children}
     </div>
   );
 }
+
 
 export default function AnalyticsPage() {
   const { data: reliability } = useQuery({
