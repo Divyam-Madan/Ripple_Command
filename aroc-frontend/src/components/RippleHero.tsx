@@ -31,9 +31,9 @@ export default function RippleHero() {
     const colors = new Float32Array(PARTICLE_COUNT * 3);
     const sizes = new Float32Array(PARTICLE_COUNT);
 
-    const col1 = new THREE.Color('#00d4ff');
-    const col2 = new THREE.Color('#00ff9d');
-    const col3 = new THREE.Color('#a78bfa');
+    const col1 = new THREE.Color('#ffffff'); // White
+    const col2 = new THREE.Color('#5a534e'); // Dark warm gray
+    const col3 = new THREE.Color('#b8a49c'); // Subtle rose/taupe
 
     for (let i = 0; i < PARTICLE_COUNT; i++) {
       const theta = Math.random() * Math.PI * 2;
@@ -60,8 +60,8 @@ export default function RippleHero() {
       size: 1.0,
       vertexColors: true,
       transparent: true,
-      opacity: 0.7,
-      blending: THREE.AdditiveBlending,
+      opacity: 0.8,
+      blending: THREE.NormalBlending,
       sizeAttenuation: true,
       depthWrite: false,
     });
@@ -71,10 +71,10 @@ export default function RippleHero() {
 
     // Connecting lines between nearby particles
     const lineMat = new THREE.LineBasicMaterial({
-      color: 0x00d4ff,
+      color: 0xffffff,
       transparent: true,
-      opacity: 0.08,
-      blending: THREE.AdditiveBlending,
+      opacity: 0.15,
+      blending: THREE.NormalBlending,
     });
 
     const linePositions = [];
@@ -104,11 +104,11 @@ export default function RippleHero() {
     // Central glowing sphere
     const coreGeo = new THREE.SphereGeometry(4, 32, 32);
     const coreMat = new THREE.MeshStandardMaterial({
-      color: 0x00d4ff,
-      emissive: 0x00d4ff,
-      emissiveIntensity: 2.0,
-      metalness: 0.8,
-      roughness: 0.2,
+      color: 0xffffff,
+      emissive: 0xffffff,
+      emissiveIntensity: 1.0,
+      metalness: 0.2,
+      roughness: 0.1,
     });
     const coreSphere = new THREE.Mesh(coreGeo, coreMat);
     scene.add(coreSphere);
@@ -116,7 +116,7 @@ export default function RippleHero() {
     // Orbit rings
     function makeRing(radius: number, color: number, rotX: number, rotZ: number) {
       const geo = new THREE.TorusGeometry(radius, 0.15, 4, 64);
-      const mat = new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.25, blending: THREE.AdditiveBlending });
+      const mat = new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.3, blending: THREE.NormalBlending });
       const ring = new THREE.Mesh(geo, mat);
       ring.rotation.x = rotX;
       ring.rotation.z = rotZ;
@@ -124,16 +124,16 @@ export default function RippleHero() {
     }
 
     const rings = [
-      makeRing(14, 0x00d4ff, Math.PI / 3, 0.4),
-      makeRing(20, 0x00ff9d, 0.8, Math.PI / 5),
-      makeRing(28, 0xa78bfa, Math.PI / 6, -0.6),
+      makeRing(14, 0xffffff, Math.PI / 3, 0.4),
+      makeRing(20, 0x5a534e, 0.8, Math.PI / 5),
+      makeRing(28, 0xb8a49c, Math.PI / 6, -0.6),
     ];
     rings.forEach(r => scene.add(r));
 
     // Ambient + point lights
-    const ambientLight = new THREE.AmbientLight(0x002244, 2);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 2);
     scene.add(ambientLight);
-    const pointLight = new THREE.PointLight(0x00d4ff, 3, 120);
+    const pointLight = new THREE.PointLight(0xffffff, 3, 120);
     scene.add(pointLight);
 
     let animationFrameId: number;

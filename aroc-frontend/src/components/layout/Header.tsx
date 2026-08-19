@@ -5,20 +5,24 @@ export default function Header() {
   const path = location.pathname.split('/')[1] || 'dashboard';
 
   return (
-    <header className="h-14 bg-surface-1 border-b border-border flex items-center justify-between px-6">
-      <div className="text-sm text-text-secondary capitalize">
-        {path.replace('-', ' ')}
-      </div>
+    <header className="h-16 flex-shrink-0 bg-white/30 backdrop-blur-xl border-b border-white/40 flex items-center justify-between px-8 z-20 shadow-sm">
       <div className="flex items-center gap-3">
-        <span className="font-semibold text-text-primary">AROC Control Tower</span>
-        <span className="px-2 py-0.5 text-[10px] font-mono bg-accent/10 text-accent border border-accent/20 rounded">
-          DEMO
-        </span>
+        <div className="w-1.5 h-6 bg-accent rounded-full" />
+        <h1 className="text-lg font-bold text-stone-900 capitalize tracking-wide">
+          {path.replace('-', ' ')}
+        </h1>
       </div>
-      <div className="flex items-center gap-4 text-xs text-text-secondary">
-        <span>Last sync: Just now</span>
-        <div className="bg-surface-2 px-2 py-1 rounded border border-border">
-          0 Alerts
+      
+      <div className="flex items-center gap-6">
+        <div className="hidden md:flex items-center gap-4 text-[11px] font-bold tracking-widest text-stone-700 uppercase">
+          <span className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-status-healthy animate-pulse-glow" /> Model Synced</span>
+          <span className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse-glow" /> AI Copilot Online</span>
+        </div>
+        <div className="w-px h-4 bg-stone-300 hidden md:block" />
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-full bg-stone-900 flex items-center justify-center shadow-md">
+            <span className="text-xs font-bold text-white">DM</span>
+          </div>
         </div>
       </div>
     </header>

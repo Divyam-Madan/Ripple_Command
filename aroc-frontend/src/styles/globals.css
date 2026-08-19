@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 @import 'maplibre-gl/dist/maplibre-gl.css';
 
 @tailwind base;
@@ -6,24 +6,42 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 body {
-  background: #0d0f14;
-  color: #e8eaf0;
-  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  /* Using user's custom background color */
+  background: linear-gradient(135deg, #c26e1b 0%, #c26e1b 80%, #c26e1b 100%);
+  background-attachment: fixed;
+  color: #1c1917;
+  font-family: 'Inter', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* React Flow overrides */
-.react-flow__background { background: #0d0f14; }
-.react-flow__edge-path { stroke: rgba(139,144,160,0.3); }
-.react-flow__minimap { background: #13161e; }
+/* Custom Scrollbar for a sleek look */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(90, 83, 78, 0.2);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(90, 83, 78, 0.4);
+}
 
-/* Scrollbar */
-::-webkit-scrollbar { width: 4px; height: 4px; }
-::-webkit-scrollbar-track { background: #13161e; }
-::-webkit-scrollbar-thumb { background: #21263a; border-radius: 2px; }
+/* Glass panel utility (Light Frost) */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 0, 255, 0);
+  box-shadow: 0 8px 32px 0 rgba(90, 83, 78, 0.05);
+}

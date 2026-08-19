@@ -44,7 +44,7 @@ export default function ShipmentsPage() {
   });
 
   if (isLoading) return (
-    <div className="flex items-center gap-3 p-8 text-text-secondary text-sm font-mono">
+    <div className="flex items-center gap-3 p-8 text-stone-300 text-sm font-mono">
       <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
       Loading shipment data...
     </div>
@@ -52,7 +52,7 @@ export default function ShipmentsPage() {
   if (isError) return (
     <div className="p-8">
       <p className="text-status-critical text-sm mb-3">Failed to load shipments.</p>
-      <button onClick={() => refetch()} className="text-xs text-accent border border-border px-3 py-1.5 rounded-sm">Retry</button>
+      <button onClick={() => refetch()} className="text-xs text-blue-700 border border-border px-3 py-1.5 rounded-sm">Retry</button>
     </div>
   );
 
@@ -73,8 +73,8 @@ export default function ShipmentsPage() {
               onClick={() => setStatusFilter(s => s === status ? '' : status)}
               className={`flex items-center gap-1.5 text-xs font-mono px-3 py-1.5 rounded-sm border transition-colors ${
                 statusFilter === status
-                  ? 'border-accent bg-blue-950/30 text-accent'
-                  : 'border-border bg-surface-2 text-text-secondary hover:border-border/70'
+                  ? 'border-accent bg-blue-950/30 text-blue-700'
+                  : 'border-border bg-surface-2 text-stone-300 hover:border-border/70'
               }`}
             >
               <span className={`w-1.5 h-1.5 rounded-full ${statusConfig[status]?.dot || 'bg-text-tertiary'}`} />
@@ -90,12 +90,12 @@ export default function ShipmentsPage() {
             placeholder="Search shipment code..."
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="flex-1 bg-surface-2 border border-border rounded-sm px-3 py-2 text-sm text-text-primary placeholder:text-text-tertiary font-mono focus:outline-none focus:border-accent"
+            className="flex-1 bg-surface-2 border border-border rounded-sm px-3 py-2 text-sm text-stone-100 placeholder:text-stone-400 font-mono focus:outline-none focus:border-accent"
           />
           <select
             value={riskFilter}
             onChange={e => setRiskFilter(e.target.value)}
-            className="bg-surface-2 border border-border rounded-sm px-3 py-2 text-sm text-text-secondary font-mono focus:outline-none focus:border-accent"
+            className="bg-surface-2 border border-border rounded-sm px-3 py-2 text-sm text-stone-300 font-mono focus:outline-none focus:border-accent"
           >
             <option value="">All Risk Levels</option>
             <option value="high">High Risk</option>
@@ -103,7 +103,7 @@ export default function ShipmentsPage() {
             <option value="low">Low Risk</option>
           </select>
           <button onClick={() => { setStatusFilter(''); setRiskFilter(''); setSearch(''); }}
-            className="text-xs text-text-secondary border border-border px-3 py-2 rounded-sm hover:bg-surface-2">
+            className="text-xs text-stone-300 border border-border px-3 py-2 rounded-sm hover:bg-surface-2">
             Clear
           </button>
         </div>
@@ -115,7 +115,7 @@ export default function ShipmentsPage() {
               <thead className="sticky top-0 bg-surface-3">
                 <tr className="border-b border-border">
                   {['Shipment', 'Origin → Dest', 'Carrier', 'Status', 'Planned ETA', 'Delay', 'Risk'].map(h => (
-                    <th key={h} className="text-left p-3 text-text-tertiary font-mono uppercase tracking-wider whitespace-nowrap">{h}</th>
+                    <th key={h} className="text-left p-3 text-stone-400 font-mono uppercase tracking-wider whitespace-nowrap">{h}</th>
                   ))}
                 </tr>
               </thead>
@@ -128,27 +128,27 @@ export default function ShipmentsPage() {
                       s.id === selectedId ? 'bg-surface-3' : 'hover:bg-surface-1'
                     }`}
                   >
-                    <td className="p-3 font-mono text-text-primary whitespace-nowrap">{s.shipment_code}</td>
-                    <td className="p-3 text-text-secondary whitespace-nowrap">
+                    <td className="p-3 font-mono text-stone-100 whitespace-nowrap">{s.shipment_code}</td>
+                    <td className="p-3 text-stone-300 whitespace-nowrap">
                       {s.origin_type} {s.origin_id} → {s.destination_type} {s.destination_id}
                     </td>
-                    <td className="p-3 text-text-secondary">{s.carrier}</td>
+                    <td className="p-3 text-stone-300">{s.carrier}</td>
                     <td className="p-3">
                       <div className="flex items-center gap-1.5">
                         <span className={`w-1.5 h-1.5 rounded-full ${statusConfig[s.status]?.dot || 'bg-text-tertiary'}`} />
-                        <span className="text-text-primary">{statusConfig[s.status]?.label || s.status}</span>
+                        <span className="text-stone-100">{statusConfig[s.status]?.label || s.status}</span>
                       </div>
                     </td>
-                    <td className="p-3 font-mono text-text-secondary whitespace-nowrap">
+                    <td className="p-3 font-mono text-stone-300 whitespace-nowrap">
                       {s.planned_arrival ? new Date(s.planned_arrival).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : '—'}
                     </td>
                     <td className="p-3 font-mono">
                       {s.delay_hours > 0
                         ? <span className="text-status-critical">{s.delay_hours.toFixed(0)}h</span>
-                        : <span className="text-text-tertiary">—</span>}
+                        : <span className="text-stone-400">—</span>}
                     </td>
                     <td className="p-3 font-mono">
-                      <span className={riskColor[s.risk_level || 'low'] || 'text-text-secondary'}>
+                      <span className={riskColor[s.risk_level || 'low'] || 'text-stone-300'}>
                         {s.risk_level || '—'}
                       </span>
                     </td>
@@ -157,7 +157,7 @@ export default function ShipmentsPage() {
               </tbody>
             </table>
           </div>
-          <div className="border-t border-border px-4 py-2 text-xs text-text-tertiary font-mono">
+          <div className="border-t border-border px-4 py-2 text-xs text-stone-400 font-mono">
             {(shipments || []).length} shipments shown
           </div>
         </div>
@@ -168,10 +168,10 @@ export default function ShipmentsPage() {
         <div className="w-80 shrink-0 bg-surface-2 border border-border rounded-sm p-4 overflow-y-auto">
           <div className="flex justify-between mb-4">
             <div>
-              <div className="text-xs font-mono text-text-tertiary">Shipment Detail</div>
-              <h3 className="text-sm font-semibold text-text-primary mt-0.5 font-mono">{selected.shipment_code}</h3>
+              <div className="text-xs font-mono text-stone-400">Shipment Detail</div>
+              <h3 className="text-sm font-semibold text-stone-100 mt-0.5 font-mono">{selected.shipment_code}</h3>
             </div>
-            <button onClick={() => setSelectedId(null)} className="text-text-tertiary text-lg">&times;</button>
+            <button onClick={() => setSelectedId(null)} className="text-stone-400 text-lg">&times;</button>
           </div>
 
           <div className="space-y-3 text-xs mb-5">
@@ -185,7 +185,7 @@ export default function ShipmentsPage() {
             <Detail label="Mode" value={selected.transport_mode} />
             <Detail label="Quantity" value={selected.quantity?.toLocaleString()} />
             <Detail label="Delay">
-              <span className={selected.delay_hours > 0 ? 'text-status-critical font-mono' : 'text-text-secondary'}>
+              <span className={selected.delay_hours > 0 ? 'text-status-critical font-mono' : 'text-stone-300'}>
                 {selected.delay_hours > 0 ? `${selected.delay_hours}h` : '—'}
               </span>
             </Detail>
@@ -215,7 +215,7 @@ export default function ShipmentsPage() {
           {/* Events timeline */}
           {selected.events && selected.events.length > 0 && (
             <div>
-              <div className="text-xs font-mono text-text-tertiary uppercase tracking-wider mb-3">Event Timeline</div>
+              <div className="text-xs font-mono text-stone-400 uppercase tracking-wider mb-3">Event Timeline</div>
               <div className="space-y-2">
                 {selected.events.map((ev: any) => (
                   <div key={ev.id} className="flex gap-2">
@@ -224,8 +224,8 @@ export default function ShipmentsPage() {
                       <div className="flex-1 w-px bg-border" />
                     </div>
                     <div className="pb-3">
-                      <div className="text-text-primary">{ev.description}</div>
-                      <div className="text-text-tertiary mt-0.5">
+                      <div className="text-stone-100">{ev.description}</div>
+                      <div className="text-stone-400 mt-0.5">
                         {ev.location_name} · {ev.timestamp ? new Date(ev.timestamp).toLocaleString('en-IN') : ''}
                       </div>
                     </div>
@@ -243,8 +243,8 @@ export default function ShipmentsPage() {
 function Detail({ label, value, children }: { label: string; value?: string | number; children?: React.ReactNode }) {
   return (
     <div className="flex justify-between items-center">
-      <span className="text-text-tertiary">{label}</span>
-      {children || <span className="text-text-primary">{value}</span>}
+      <span className="text-stone-400">{label}</span>
+      {children || <span className="text-stone-100">{value}</span>}
     </div>
   );
 }

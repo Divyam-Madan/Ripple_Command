@@ -13,10 +13,10 @@ function getAlerts(): Promise<Alert[]> {
 }
 
 const severityBadge: Record<string, string> = {
-  critical:      'text-status-critical bg-red-950/40 border border-red-900/40',
-  high:          'text-status-warning bg-amber-950/40 border border-amber-900/40',
-  medium:        'text-accent bg-blue-950/40 border border-blue-900/40',
-  informational: 'text-text-secondary bg-surface-3 border border-border',
+  critical:      'text-status-critical bg-red-500/10 border border-red-500/20',
+  high:          'text-status-warning bg-amber-500/10 border border-amber-500/20',
+  medium:        'text-blue-600 bg-blue-500/10 border border-blue-500/20',
+  informational: 'text-stone-700 bg-black/5 border border-black/10',
 };
 
 interface KPICardProps {
@@ -24,33 +24,38 @@ interface KPICardProps {
   value: string | number;
   unit?: string;
   topColor: string;
+  delay?: string;
 }
-function KPICard({ label, value, unit, topColor }: KPICardProps) {
+function KPICard({ label, value, unit, topColor, delay = '0ms' }: KPICardProps) {
   return (
-    <div className="bg-surface-2 border border-border p-4 rounded-sm"
-         style={{ borderTop: `2px solid ${topColor}` }}>
-      <div className="text-text-tertiary text-xs font-mono uppercase tracking-widest mb-3">{label}</div>
-      <div className="text-2xl font-bold text-text-primary leading-none">
+    <div className="glass-panel p-5 rounded-2xl relative overflow-hidden group hover:scale-[1.02] transition-transform duration-300 animate-slide-up" style={{ animationDelay: delay }}>
+      <div className="absolute top-0 left-0 w-full h-[2px] opacity-70" style={{ background: `linear-gradient(90deg, transparent, ${topColor}, transparent)` }} />
+      <div className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-500" style={{ background: `radial-gradient(circle at top right, ${topColor}, transparent)` }} />
+      
+      <div className="text-stone-700 text-[11px] font-bold uppercase tracking-widest mb-4">{label}</div>
+      <div className="text-3xl font-black text-stone-900 leading-none tracking-tight">
         {value}
-        {unit && <span className="text-sm font-normal text-text-secondary ml-1">{unit}</span>}
+        {unit && <span className="text-sm font-bold text-stone-600 ml-1 tracking-normal">{unit}</span>}
       </div>
     </div>
   );
 }
 
-function HealthScore({ score }: { score: number }) {
-  const color = score > 85 ? '#4ade80' : score > 65 ? '#f59e0b' : '#ef4444';
+function HealthScore({ score, delay = '0ms' }: { score: number, delay?: string }) {
+  const color = score > 85 ? '#10b981' : score > 65 ? '#f59e0b' : '#ef4444';
   return (
-    <div className="bg-surface-2 border border-border p-4 rounded-sm"
-         style={{ borderTop: `2px solid ${color}` }}>
-      <div className="text-text-tertiary text-xs font-mono uppercase tracking-widest mb-3">Supply Chain Health</div>
-      <div className="flex items-end gap-3">
-        <span className="text-4xl font-bold leading-none" style={{ color }}>{score}</span>
-        <span className="text-text-secondary text-sm mb-1">/ 100</span>
+    <div className="glass-panel p-6 rounded-2xl relative overflow-hidden group hover:scale-[1.02] transition-transform duration-300 animate-slide-up" style={{ animationDelay: delay }}>
+      <div className="absolute top-0 left-0 w-full h-[2px] opacity-80" style={{ background: `linear-gradient(90deg, transparent, ${color}, transparent)` }} />
+      
+      <div className="text-stone-700 text-[11px] font-bold uppercase tracking-widest mb-4">Supply Chain Health</div>
+      <div className="flex items-end gap-3 mb-5">
+        <span className="text-5xl font-black leading-none tracking-tighter" style={{ color, textShadow: `0 0 20px ${color}40` }}>{score}</span>
+        <span className="text-stone-600 text-sm font-bold mb-1 tracking-wide">/ 100</span>
       </div>
-      <div className="mt-3 h-1 bg-surface-3 rounded-full overflow-hidden">
-        <div className="h-full rounded-full transition-all duration-700"
-             style={{ width: `${score}%`, background: color }} />
+      <div className="h-1.5 bg-black/10 rounded-full overflow-hidden shadow-inner relative">
+        <div className="absolute inset-0 bg-black/10" />
+        <div className="h-full rounded-full transition-all duration-1000 ease-out relative z-10"
+             style={{ width: `${score}%`, background: color, boxShadow: `0 0 10px ${color}` }} />
       </div>
     </div>
   );
@@ -70,7 +75,7 @@ export default function DashboardPage() {
   });
 
   if (kpisLoading) {
-    return <div className="flex items-center gap-3 p-8 text-text-secondary text-sm font-mono">
+    return <div className="flex items-center gap-3 p-8 text-stone-700 text-sm font-mono">
       <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
       Loading network state...
     </div>;
@@ -78,7 +83,7 @@ export default function DashboardPage() {
   if (kpisError) {
     return <div className="p-8">
       <p className="text-status-critical text-sm mb-3">Failed to load dashboard data.</p>
-      <button onClick={() => refetch()} className="text-xs text-accent border border-border px-3 py-1.5 rounded-sm hover:bg-surface-2 transition-colors">
+      <button onClick={() => refetch()} className="text-xs text-blue-700 border border-border px-3 py-1.5 rounded-sm hover:bg-white/30 transition-colors">
         Retry Connection
       </button>
     </div>;
@@ -89,13 +94,15 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6 max-w-[1400px]">
       {/* Hero Banner */}
-      <div className="relative h-48 bg-surface-2 border border-border rounded-sm overflow-hidden mb-6 flex flex-col justify-center px-8">
+      <div className="relative h-56 glass-panel rounded-3xl overflow-hidden mb-8 flex flex-col justify-center px-10 shadow-lg animate-fade-in group">
+        <div className="absolute inset-0 bg-gradient-to-r from-accent/5 to-white/10 mix-blend-overlay pointer-events-none" />
         <RippleHero />
-        <div className="relative z-10">
-          <h1 className="text-3xl font-bold text-white tracking-tight mb-2" style={{ textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}>AROC Platform</h1>
-          <p className="text-sm font-mono text-text-secondary" style={{ textShadow: '0 2px 10px rgba(0,0,0,0.8)' }}>
-            Autonomous Resilient Operations Center<br />
-            Predict. Simulate. Prescribe.
+        <div className="relative z-10 animate-slide-up">
+          <h1 className="text-4xl font-black tracking-tight text-stone-900 mb-2 drop-shadow-sm" style={{ textShadow: '0 2px 10px rgba(0,0,0,0.15)' }}>
+            Global Operations Center
+          </h1>
+          <p className="text-sm font-bold text-stone-800 uppercase tracking-widest max-w-xl">
+            Predictive Twin &bull; Scenario Engine
           </p>
         </div>
       </div>
@@ -103,17 +110,26 @@ export default function DashboardPage() {
       {/* KPI Grid */}
       <div className="grid grid-cols-4 xl:grid-cols-8 gap-3">
         <div className="col-span-2 xl:col-span-1">
-          <HealthScore score={k.health_score} />
+          <HealthScore score={k.health_score} delay="0ms" />
         </div>
-        <KPICard label="Active Shipments"   value={k.active_shipments}  topColor="#3b82f6" />
-        <KPICard label="At-Risk Shipments"  value={k.at_risk_shipments} topColor={k.at_risk_shipments > 0 ? '#f59e0b' : '#4ade80'} />
-        <KPICard label="Critical Suppliers" value={k.critical_suppliers} topColor={k.critical_suppliers > 0 ? '#ef4444' : '#4ade80'} />
-        <KPICard label="Projected Stockouts" value={k.projected_stockouts} topColor={k.projected_stockouts > 0 ? '#ef4444' : '#4ade80'} />
-        <KPICard label="Production at Risk"  value={k.production_at_risk} unit="line(s)" topColor={k.production_at_risk > 0 ? '#ef4444' : '#4ade80'} />
-        <div className="col-span-2">
-          <KPICard label="Financial Exposure" value={`₹${(k.financial_exposure / 1_00_000).toFixed(1)}L`} topColor="#ef4444" />
+        <div className="col-span-2 xl:col-span-1">
+          <KPICard label="Active Shipments" value={k.active_shipments} topColor="#3b82f6" delay="100ms" />
         </div>
-        <KPICard label="Active Disruptions" value={k.active_disruptions} topColor={k.active_disruptions > 0 ? '#f59e0b' : '#4ade80'} />
+        <div className="col-span-2 xl:col-span-1">
+          <KPICard label="At Risk" value={k.at_risk_shipments} topColor="#f59e0b" delay="200ms" />
+        </div>
+        <div className="col-span-2 xl:col-span-1">
+          <KPICard label="Projected Stockouts" value={k.projected_stockouts} topColor="#ef4444" delay="300ms" />
+        </div>
+        <div className="col-span-2 xl:col-span-1">
+          <KPICard label="Financial Exp." value={(k.financial_exposure / 1000000).toFixed(1)} unit="M" topColor="#ef4444" delay="400ms" />
+        </div>
+        <div className="col-span-2 xl:col-span-1">
+          <KPICard label="Active Disruptions" value={k.active_disruptions} topColor="#f59e0b" delay="500ms" />
+        </div>
+        <div className="col-span-4 xl:col-span-2">
+          <KPICard label="Critical Suppliers" value={k.critical_suppliers} topColor="#a78bfa" delay="600ms" />
+        </div>
       </div>
 
       {/* Main content */}
@@ -124,33 +140,33 @@ export default function DashboardPage() {
           {/* Disruption Feed */}
           <section>
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm font-semibold text-text-primary uppercase tracking-wider">Active Disruption Feed</h3>
+              <h3 className="text-sm font-bold text-stone-900 uppercase tracking-wider">Active Disruption Feed</h3>
               {k.active_disruptions > 0 && (
-                <span className="text-xs font-mono text-status-warning">{k.active_disruptions} active</span>
+                <span className="text-xs font-bold text-stone-600">{k.active_disruptions} active</span>
               )}
             </div>
             <div className="space-y-2">
-              {(alerts || []).filter(a => !a.is_read && a.severity !== 'informational').slice(0, 5).map(alert => (
-                <div key={alert.id} className="bg-surface-2 border border-border rounded-sm p-3 flex items-start gap-3">
+              {(alerts || []).filter(a => !a.is_read && a.severity !== 'informational').slice(0, 5).map((alert, i) => (
+                <div key={alert.id} className="glass-panel rounded-xl p-4 flex items-start gap-4 group hover:bg-white/[0.02] transition-all duration-300 animate-slide-up" style={{ animationDelay: `${i * 100 + 700}ms` }}>
                   <div className="mt-0.5">
-                    <span className={`inline-block text-xs font-mono px-2 py-0.5 rounded-sm ${severityBadge[alert.severity]}`}>
+                    <span className={`inline-block text-[10px] font-black tracking-widest px-2 py-1 rounded ${severityBadge[alert.severity]}`}>
                       {alert.severity.toUpperCase()}
                     </span>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-text-primary truncate">{alert.title}</p>
-                    <p className="text-xs text-text-secondary mt-0.5 line-clamp-2">{alert.description}</p>
+                    <p className="text-sm font-bold text-stone-900 truncate">{alert.title}</p>
+                    <p className="text-xs text-stone-700 mt-1 line-clamp-2 leading-relaxed font-medium">{alert.description}</p>
                   </div>
                   <button
                     onClick={() => navigate('/simulation')}
-                    className="text-xs text-accent hover:text-blue-400 font-mono whitespace-nowrap"
+                    className="text-xs font-bold px-3 py-1.5 rounded-lg bg-blue-500/10 text-blue-600 hover:bg-blue-500/20 transition-colors whitespace-nowrap border border-blue-500/20 shadow-sm"
                   >
                     Simulate
                   </button>
                 </div>
               ))}
               {(!alerts || alerts.filter(a => !a.is_read && a.severity !== 'informational').length === 0) && (
-                <div className="bg-surface-2 border border-border rounded-sm p-4 text-sm text-text-secondary">
+                <div className="glass-panel border border-white/40 rounded-xl p-4 text-sm text-stone-700 font-bold shadow-sm">
                   No active disruptions detected. Network operating normally.
                 </div>
               )}
@@ -160,8 +176,8 @@ export default function DashboardPage() {
           {/* Shipment Watchlist */}
           <section>
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm font-semibold text-text-primary uppercase tracking-wider">Shipment Watchlist</h3>
-              <button onClick={() => navigate('/shipments')} className="text-xs text-accent font-mono">
+              <h3 className="text-sm font-bold text-stone-900 uppercase tracking-wider">Shipment Watchlist</h3>
+              <button onClick={() => navigate('/shipments')} className="text-xs text-blue-600 font-bold hover:underline">
                 View All
               </button>
             </div>
@@ -174,42 +190,42 @@ export default function DashboardPage() {
 
           {/* Financial Summary */}
           <section>
-            <h3 className="text-sm font-semibold text-text-primary uppercase tracking-wider mb-3">Financial Exposure</h3>
-            <div className="bg-surface-2 border border-border rounded-sm p-4 space-y-3">
+            <h3 className="text-sm font-bold text-stone-900 uppercase tracking-wider mb-3">Financial Exposure</h3>
+            <div className="glass-panel border border-white/40 rounded-xl p-5 space-y-4 animate-slide-up hover:scale-[1.02] transition-transform duration-300" style={{ animationDelay: '700ms' }}>
               <div className="flex justify-between items-center">
-                <span className="text-xs text-text-secondary font-mono">Gross Exposure</span>
-                <span className="text-sm font-mono text-status-critical">₹{k.financial_exposure.toLocaleString('en-IN')}</span>
+                <span className="text-xs text-stone-700 font-bold uppercase tracking-wider">Gross Exposure</span>
+                <span className="text-sm font-mono text-status-critical font-black">₹{k.financial_exposure.toLocaleString('en-IN')}</span>
               </div>
-              <div className="h-px bg-border" />
+              <div className="h-px bg-white/40" />
               <div className="flex justify-between items-center">
-                <span className="text-xs text-text-secondary font-mono">Recoverable</span>
-                <span className="text-sm font-mono text-status-healthy">~₹{Math.round(k.financial_exposure * 0.7).toLocaleString('en-IN')}</span>
+                <span className="text-xs text-stone-700 font-bold uppercase tracking-wider">Recoverable</span>
+                <span className="text-sm font-mono text-status-healthy font-black">~₹{Math.round(k.financial_exposure * 0.7).toLocaleString('en-IN')}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-xs text-text-secondary font-mono">Net Exposure</span>
-                <span className="text-sm font-mono text-status-warning">₹{Math.round(k.financial_exposure * 0.3).toLocaleString('en-IN')}</span>
+                <span className="text-xs text-stone-700 font-bold uppercase tracking-wider">Net Exposure</span>
+                <span className="text-sm font-mono text-status-warning font-black">₹{Math.round(k.financial_exposure * 0.3).toLocaleString('en-IN')}</span>
               </div>
             </div>
           </section>
 
           {/* Quick Actions */}
-          <section>
-            <h3 className="text-sm font-semibold text-text-primary uppercase tracking-wider mb-3">Quick Actions</h3>
+          <section className="animate-slide-up" style={{ animationDelay: '800ms' }}>
+            <h3 className="text-sm font-semibold text-stone-900 uppercase tracking-wider mb-3">Quick Actions</h3>
             <div className="space-y-2">
               <button onClick={() => navigate('/simulation')}
-                className="w-full text-left bg-surface-2 hover:bg-surface-3 border border-border rounded-sm p-3 transition-colors">
-                <div className="text-sm font-medium text-text-primary">Run Disruption Simulation</div>
-                <div className="text-xs text-text-secondary mt-0.5">Model S3 delay → cascade impact</div>
+                className="w-full text-left glass-panel hover:bg-white/[0.6] rounded-xl p-4 transition-all duration-300 group">
+                <div className="text-sm font-semibold text-stone-900 group-hover:text-blue-700 transition-colors">Run Disruption Simulation</div>
+                <div className="text-xs text-stone-700 mt-1">Model S3 delay → cascade impact</div>
               </button>
               <button onClick={() => navigate('/digital-twin')}
-                className="w-full text-left bg-surface-2 hover:bg-surface-3 border border-border rounded-sm p-3 transition-colors">
-                <div className="text-sm font-medium text-text-primary">View Digital Twin</div>
-                <div className="text-xs text-text-secondary mt-0.5">Interactive topology + geographic map</div>
+                className="w-full text-left glass-panel hover:bg-white/[0.6] rounded-xl p-4 transition-all duration-300 group">
+                <div className="text-sm font-semibold text-stone-900 group-hover:text-blue-700 transition-colors">View Digital Twin</div>
+                <div className="text-xs text-stone-700 mt-1">Interactive topology + geographic map</div>
               </button>
               <button onClick={() => navigate('/scenarios')}
-                className="w-full text-left bg-surface-2 hover:bg-surface-3 border border-border rounded-sm p-3 transition-colors">
-                <div className="text-sm font-medium text-text-primary">Load Scenario</div>
-                <div className="text-xs text-text-secondary mt-0.5">8 pre-built supply chain scenarios</div>
+                className="w-full text-left glass-panel hover:bg-white/[0.6] rounded-xl p-4 transition-all duration-300 group">
+                <div className="text-sm font-semibold text-stone-900 group-hover:text-blue-700 transition-colors">Load Scenario</div>
+                <div className="text-xs text-stone-700 mt-1">8 pre-built supply chain scenarios</div>
               </button>
             </div>
           </section>
@@ -217,7 +233,7 @@ export default function DashboardPage() {
           {/* Alert summary */}
           {alerts && alerts.length > 0 && (
             <section>
-              <h3 className="text-sm font-semibold text-text-primary uppercase tracking-wider mb-3">Recent Alerts</h3>
+              <h3 className="text-sm font-semibold text-stone-900 uppercase tracking-wider mb-3">Recent Alerts</h3>
               <div className="space-y-1.5">
                 {alerts.slice(0, 4).map(a => (
                   <div key={a.id} className="flex items-start gap-2 text-xs">
@@ -226,7 +242,7 @@ export default function DashboardPage() {
                       a.severity === 'high' ? 'bg-status-warning' :
                       a.severity === 'medium' ? 'bg-accent' : 'bg-text-tertiary'
                     }`} />
-                    <span className="text-text-secondary line-clamp-2">{a.title}</span>
+                    <span className="text-stone-700 line-clamp-2">{a.title}</span>
                   </div>
                 ))}
               </div>
@@ -252,41 +268,41 @@ function AtRiskShipments() {
 
   const all = [...(shipments || []), ...(delayed || [])].slice(0, 8);
 
-  if (isLoading) return <div className="text-xs text-text-secondary font-mono p-3">Loading shipment data...</div>;
+  if (isLoading) return <div className="text-xs text-stone-700 font-mono p-3">Loading shipment data...</div>;
   if (!all.length) return (
-    <div className="bg-surface-2 border border-border rounded-sm p-4 text-sm text-text-secondary">
+    <div className="bg-surface-2 border border-border rounded-sm p-4 text-sm text-stone-700">
       All monitored shipments are within acceptable parameters.
     </div>
   );
 
   const statusStyle: Record<string, string> = {
-    at_risk: 'text-status-warning',
-    delayed: 'text-status-critical',
-    in_transit: 'text-accent',
-    pending: 'text-text-secondary',
+    at_risk: 'text-status-warning font-bold',
+    delayed: 'text-status-critical font-bold',
+    in_transit: 'text-blue-600 font-bold',
+    pending: 'text-stone-500 font-bold',
   };
 
   return (
-    <div className="bg-surface-2 border border-border rounded-sm overflow-hidden">
+    <div className="glass-panel border border-white/40 rounded-xl overflow-hidden shadow-sm animate-slide-up" style={{ animationDelay: '900ms' }}>
       <table className="w-full text-xs">
         <thead>
-          <tr className="border-b border-border">
-            <th className="text-left p-3 text-text-tertiary font-mono uppercase tracking-wider">Shipment</th>
-            <th className="text-left p-3 text-text-tertiary font-mono uppercase tracking-wider">Status</th>
-            <th className="text-left p-3 text-text-tertiary font-mono uppercase tracking-wider">Delay</th>
-            <th className="text-left p-3 text-text-tertiary font-mono uppercase tracking-wider">Risk</th>
+          <tr className="border-b border-white/20">
+            <th className="text-left p-4 text-stone-700 font-bold uppercase tracking-wider">Shipment</th>
+            <th className="text-left p-4 text-stone-700 font-bold uppercase tracking-wider">Status</th>
+            <th className="text-left p-4 text-stone-700 font-bold uppercase tracking-wider">Delay</th>
+            <th className="text-left p-4 text-stone-700 font-bold uppercase tracking-wider">Risk</th>
           </tr>
         </thead>
         <tbody>
           {all.map((s: any) => (
-            <tr key={s.id} className="border-b border-border/50 hover:bg-surface-3 transition-colors">
-              <td className="p-3 font-mono text-text-primary">{s.shipment_code}</td>
-              <td className="p-3">
-                <span className={`font-mono ${statusStyle[s.status] || 'text-text-secondary'}`}>
+            <tr key={s.id} className="border-b border-white/10 hover:bg-white/[0.2] transition-colors">
+              <td className="p-4 font-mono text-stone-900 font-bold">{s.shipment_code}</td>
+              <td className="p-4">
+                <span className={`font-mono ${statusStyle[s.status] || 'text-stone-500'}`}>
                   {s.status.replace('_', ' ')}
                 </span>
               </td>
-              <td className="p-3 font-mono text-text-secondary">
+              <td className="p-3 font-mono text-stone-700">
                 {s.delay_hours > 0 ? `${s.delay_hours}h` : '—'}
               </td>
               <td className="p-3">

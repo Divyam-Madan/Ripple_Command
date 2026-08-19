@@ -137,7 +137,7 @@ export default function DigitalTwinPage() {
   }, []);
 
   if (isLoading) {
-    return <div className="flex items-center gap-3 p-8 text-text-secondary text-sm font-mono">
+    return <div className="flex items-center gap-3 p-8 text-stone-700 text-sm font-mono">
       <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
       Loading network topology...
     </div>;
@@ -160,8 +160,8 @@ export default function DigitalTwinPage() {
               onClick={() => setViewMode(v)}
               className={`text-xs font-mono uppercase tracking-wider px-4 py-2 rounded-sm transition-colors ${
                 viewMode === v
-                  ? 'bg-surface-2 text-text-primary border border-border'
-                  : 'text-text-tertiary hover:text-text-secondary'
+                  ? 'bg-surface-2 text-stone-900 border border-border'
+                  : 'text-stone-500 hover:text-stone-700'
               }`}
             >
               {v === 'topology' ? 'Dependency Topology' : 'Geographic View'}
@@ -239,17 +239,17 @@ export default function DigitalTwinPage() {
                   latitude={mapPopup.data.lat}
                   onClose={() => setMapPopup(null)}
                   closeButton={true}
-                  className="!bg-surface-2 !text-text-primary !border-border !font-mono !text-xs"
+                  className="!bg-white/80 !backdrop-blur-md !text-stone-900 !border-white/50 !font-mono !text-xs !rounded-xl !shadow-lg"
                 >
-                  <div style={{ padding: '4px 2px' }}>
-                    <div style={{ color: '#8b90a0', fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                  <div style={{ padding: '6px 4px' }}>
+                    <div style={{ color: '#78716c', fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 600 }}>
                       {mapPopup.type}
                     </div>
-                    <div style={{ color: '#e8eaf0', fontWeight: 600, marginTop: 2 }}>{mapPopup.data.label}</div>
-                    <div style={{ color: '#8b90a0', marginTop: 2 }}>{mapPopup.data.code}</div>
+                    <div style={{ color: '#1c1917', fontWeight: 700, marginTop: 4, fontSize: 13 }}>{mapPopup.data.label}</div>
+                    <div style={{ color: '#44403c', marginTop: 2 }}>{mapPopup.data.code}</div>
                     {mapPopup.data.risk_level && (
-                      <div style={{ marginTop: 4, color: statusDot[mapPopup.data.risk_level] || '#64748b', fontSize: 9 }}>
-                        RISK: {mapPopup.data.risk_level?.toUpperCase()}
+                      <div style={{ marginTop: 6, color: mapPopup.data.risk_level === 'high' ? '#dc2626' : mapPopup.data.risk_level === 'medium' ? '#d97706' : '#059669', fontWeight: 600 }}>
+                        Risk: {mapPopup.data.risk_level.toUpperCase()}
                       </div>
                     )}
                     {impactMap.get(mapPopup.id) && (
@@ -270,15 +270,15 @@ export default function DigitalTwinPage() {
         <NodeDetailPanel nodeType={selectedNode.type} nodeId={selectedNode.id} name={selectedNode.name}
           onClose={() => setSelectedNode(null)} impactSev={impactMap.get(`${selectedNode.type}_${selectedNode.id}`)} />
       ) : (
-        <div className="w-72 shrink-0 bg-surface-2 border border-border rounded-sm p-4 flex flex-col items-center justify-center text-center">
-          <div className="text-text-tertiary text-xs font-mono mb-2">Node Detail</div>
-          <p className="text-xs text-text-secondary">Click any node in the topology to inspect it.</p>
+        <div className="w-80 shrink-0 glass-panel border border-white/40 rounded-xl p-6 flex flex-col items-center justify-center text-center shadow-sm">
+          <div className="text-stone-700 text-xs font-semibold uppercase tracking-wider mb-2">Node Detail</div>
+          <p className="text-sm text-stone-900">Click any node in the topology to inspect its properties and realtime metrics.</p>
           {/* Legend */}
-          <div className="mt-6 w-full space-y-2">
-            <div className="text-xs font-mono text-text-tertiary uppercase tracking-wider mb-3">Legend</div>
+          <div className="mt-8 w-full space-y-3">
+            <div className="text-xs font-semibold text-stone-700 uppercase tracking-wider mb-4 border-b border-white/20 pb-2 text-left">Legend</div>
             {Object.entries(nodeColors).map(([type, color]) => (
-              <div key={type} className="flex items-center gap-2 text-xs text-text-secondary">
-                <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ background: color }} />
+              <div key={type} className="flex items-center gap-3 text-sm text-stone-900 font-medium">
+                <div className="w-3.5 h-3.5 rounded-full flex-shrink-0 shadow-sm" style={{ background: color }} />
                 <span className="capitalize">{type.replace('_', ' ')}</span>
               </div>
             ))}
@@ -304,29 +304,29 @@ function NodeDetailPanel({ nodeType, nodeId, name, onClose, impactSev }: {
   });
 
   return (
-    <div className="w-72 shrink-0 bg-surface-2 border border-border rounded-sm p-4 overflow-y-auto">
-      <div className="flex justify-between items-start mb-4">
+    <div className="w-80 shrink-0 glass-panel border border-white/40 rounded-xl p-5 overflow-y-auto shadow-sm">
+      <div className="flex justify-between items-start mb-5">
         <div>
-          <div className="text-xs font-mono text-text-tertiary uppercase tracking-wider">{nodeType}</div>
-          <h3 className="text-sm font-semibold text-text-primary mt-0.5">{name}</h3>
+          <div className="text-xs font-semibold text-stone-700 uppercase tracking-wider">{nodeType}</div>
+          <h3 className="text-base font-bold text-stone-900 mt-1">{name}</h3>
         </div>
-        <button onClick={onClose} className="text-text-tertiary hover:text-text-secondary text-lg leading-none">&times;</button>
+        <button onClick={onClose} className="text-stone-500 hover:text-stone-900 text-2xl leading-none">&times;</button>
       </div>
 
       {impactSev && (
-        <div className={`mb-3 text-xs font-mono px-2 py-1.5 rounded-sm border ${
-          impactSev === 'critical' ? 'text-status-critical border-red-900/40 bg-red-950/20' :
-          impactSev === 'high' ? 'text-status-warning border-amber-900/40 bg-amber-950/20' :
-          'text-accent border-blue-900/40 bg-blue-950/20'
+        <div className={`mb-4 text-xs font-bold px-3 py-2 rounded-lg border ${
+          impactSev === 'critical' ? 'text-status-critical border-red-500/20 bg-red-500/10' :
+          impactSev === 'high' ? 'text-status-warning border-amber-500/20 bg-amber-500/10' :
+          'text-blue-700 border-blue-500/20 bg-blue-500/10'
         }`}>
           Simulation impact: {impactSev.toUpperCase()}
         </div>
       )}
 
-      {isLoading && <div className="text-xs text-text-secondary font-mono">Loading node data...</div>}
+      {isLoading && <div className="text-sm text-stone-700 font-medium">Loading node data...</div>}
 
       {data && (
-        <div className="space-y-3 text-xs">
+        <div className="space-y-3.5 text-sm">
           <Field label="Location" value={data.location_name} />
           {data.code && <Field label="Code" value={data.code} mono />}
           {data.capacity && <Field label="Capacity" value={data.capacity?.toLocaleString()} />}
@@ -347,8 +347,8 @@ function NodeDetailPanel({ nodeType, nodeId, name, onClose, impactSev }: {
 function Field({ label, value, mono = false }: { label: string; value: string | number; mono?: boolean }) {
   return (
     <div className="flex justify-between items-center">
-      <span className="text-text-tertiary">{label}</span>
-      <span className={`text-text-primary ${mono ? 'font-mono' : ''}`}>{value}</span>
+      <span className="text-stone-500">{label}</span>
+      <span className={`text-stone-900 ${mono ? 'font-mono' : ''}`}>{value}</span>
     </div>
   );
 }

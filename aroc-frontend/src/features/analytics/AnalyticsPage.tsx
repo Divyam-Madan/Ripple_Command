@@ -15,7 +15,7 @@ const chartTheme = {
 function ChartCard({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="bg-surface-2 border border-border rounded-sm p-4">
-      <div className="text-xs font-mono uppercase tracking-widest text-text-tertiary mb-4">{title}</div>
+      <div className="text-xs font-mono uppercase tracking-widest text-stone-400 mb-4">{title}</div>
       {children}
     </div>
   );
@@ -158,7 +158,7 @@ export default function AnalyticsPage() {
             </BarChart>
           </ResponsiveContainer>
         ) : (
-          <div className="h-32 flex items-center justify-center text-text-tertiary text-xs font-mono">
+          <div className="h-32 flex items-center justify-center text-stone-400 text-xs font-mono">
             No disruption history recorded yet.
           </div>
         )}
@@ -169,7 +169,7 @@ export default function AnalyticsPage() {
 
 function Skeleton() {
   return (
-    <div className="h-60 flex items-center justify-center text-text-tertiary text-xs font-mono">
+    <div className="h-60 flex items-center justify-center text-stone-400 text-xs font-mono">
       Loading chart data...
     </div>
   );

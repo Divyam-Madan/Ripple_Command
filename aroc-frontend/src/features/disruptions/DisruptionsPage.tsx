@@ -5,8 +5,8 @@ import { apiClient } from '@/lib/api/client';
 const severityConfig: Record<string, { label: string; classes: string }> = {
   critical: { label: 'CRITICAL', classes: 'text-status-critical bg-red-950/30 border-red-900/40' },
   high:     { label: 'HIGH',     classes: 'text-status-warning bg-amber-950/30 border-amber-900/40' },
-  medium:   { label: 'MEDIUM',  classes: 'text-accent bg-blue-950/30 border-blue-900/40' },
-  low:      { label: 'LOW',     classes: 'text-text-secondary bg-surface-3 border-border' },
+  medium:   { label: 'MEDIUM',  classes: 'text-blue-700 bg-blue-950/30 border-blue-900/40' },
+  low:      { label: 'LOW',     classes: 'text-stone-300 bg-surface-3 border-border' },
 };
 
 export default function DisruptionsPage() {
@@ -19,7 +19,7 @@ export default function DisruptionsPage() {
   });
 
   if (isLoading) return (
-    <div className="flex items-center gap-3 p-8 text-text-secondary text-sm font-mono">
+    <div className="flex items-center gap-3 p-8 text-stone-300 text-sm font-mono">
       <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
       Loading disruption registry...
     </div>
@@ -27,7 +27,7 @@ export default function DisruptionsPage() {
   if (isError) return (
     <div className="p-8">
       <p className="text-status-critical text-sm mb-3">Failed to load disruption data.</p>
-      <button onClick={() => refetch()} className="text-xs text-accent border border-border px-3 py-1.5 rounded-sm">Retry</button>
+      <button onClick={() => refetch()} className="text-xs text-blue-700 border border-border px-3 py-1.5 rounded-sm">Retry</button>
     </div>
   );
 
@@ -39,15 +39,15 @@ export default function DisruptionsPage() {
       {/* Summary row */}
       <div className="flex gap-4">
         <div className="bg-surface-2 border border-border rounded-sm px-4 py-3 text-sm">
-          <span className="text-text-tertiary font-mono text-xs">Active</span>
+          <span className="text-stone-400 font-mono text-xs">Active</span>
           <div className="text-xl font-bold text-status-warning mt-0.5">{active.length}</div>
         </div>
         <div className="bg-surface-2 border border-border rounded-sm px-4 py-3 text-sm">
-          <span className="text-text-tertiary font-mono text-xs">Resolved</span>
+          <span className="text-stone-400 font-mono text-xs">Resolved</span>
           <div className="text-xl font-bold text-status-healthy mt-0.5">{resolved.length}</div>
         </div>
         <div className="bg-surface-2 border border-border rounded-sm px-4 py-3 text-sm">
-          <span className="text-text-tertiary font-mono text-xs">Total Exposure</span>
+          <span className="text-stone-400 font-mono text-xs">Total Exposure</span>
           <div className="text-xl font-bold text-status-critical mt-0.5 font-mono">
             ₹{(disruptions || []).reduce((s: number, d: any) => s + (d.financial_exposure || 0), 0).toLocaleString('en-IN')}
           </div>
@@ -57,7 +57,7 @@ export default function DisruptionsPage() {
       {/* Active Disruptions */}
       {active.length > 0 && (
         <section>
-          <h3 className="text-xs font-mono uppercase tracking-widest text-text-tertiary mb-3">Active Disruptions</h3>
+          <h3 className="text-xs font-mono uppercase tracking-widest text-stone-400 mb-3">Active Disruptions</h3>
           <div className="space-y-2">
             {active.map((d: any) => <DisruptionCard key={d.id} disruption={d} onSimulate={() => navigate('/simulation')} />)}
           </div>
@@ -67,14 +67,14 @@ export default function DisruptionsPage() {
       {active.length === 0 && (
         <div className="bg-surface-2 border border-border rounded-sm p-8 text-center">
           <div className="text-status-healthy text-sm mb-1">No active disruptions</div>
-          <div className="text-text-tertiary text-xs font-mono">Supply chain operating within normal parameters.</div>
+          <div className="text-stone-400 text-xs font-mono">Supply chain operating within normal parameters.</div>
         </div>
       )}
 
       {/* Resolved */}
       {resolved.length > 0 && (
         <section>
-          <h3 className="text-xs font-mono uppercase tracking-widest text-text-tertiary mb-3">Resolved / Historical</h3>
+          <h3 className="text-xs font-mono uppercase tracking-widest text-stone-400 mb-3">Resolved / Historical</h3>
           <div className="space-y-2">
             {resolved.map((d: any) => <DisruptionCard key={d.id} disruption={d} onSimulate={() => navigate('/simulation')} />)}
           </div>
@@ -94,22 +94,22 @@ function DisruptionCard({ disruption: d, onSimulate }: { disruption: any; onSimu
             <span className={`text-xs font-mono px-2 py-0.5 rounded-sm border ${sev.classes}`}>
               {sev.label}
             </span>
-            <span className="text-xs font-mono text-text-tertiary">{d.disruption_type?.replace(/_/g, ' ')}</span>
+            <span className="text-xs font-mono text-stone-400">{d.disruption_type?.replace(/_/g, ' ')}</span>
             <span className={`text-xs font-mono ml-auto ${d.status === 'active' ? 'text-status-warning' : 'text-status-healthy'}`}>
               {d.status?.toUpperCase()}
             </span>
           </div>
-          <h4 className="text-sm font-semibold text-text-primary">{d.title}</h4>
-          <p className="text-xs text-text-secondary mt-1 leading-relaxed">{d.description}</p>
+          <h4 className="text-sm font-semibold text-stone-100">{d.title}</h4>
+          <p className="text-xs text-stone-300 mt-1 leading-relaxed">{d.description}</p>
           <div className="flex gap-4 mt-2 text-xs font-mono">
             {d.estimated_delay_hours > 0 && (
-              <span className="text-text-secondary">Delay: <span className="text-status-warning">{d.estimated_delay_hours}h</span></span>
+              <span className="text-stone-300">Delay: <span className="text-status-warning">{d.estimated_delay_hours}h</span></span>
             )}
             {d.financial_exposure > 0 && (
-              <span className="text-text-secondary">Exposure: <span className="text-status-critical">₹{d.financial_exposure?.toLocaleString('en-IN')}</span></span>
+              <span className="text-stone-300">Exposure: <span className="text-status-critical">₹{d.financial_exposure?.toLocaleString('en-IN')}</span></span>
             )}
             {d.started_at && (
-              <span className="text-text-tertiary">
+              <span className="text-stone-400">
                 {new Date(d.started_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
               </span>
             )}
@@ -118,7 +118,7 @@ function DisruptionCard({ disruption: d, onSimulate }: { disruption: any; onSimu
         {d.status === 'active' && (
           <button
             onClick={onSimulate}
-            className="shrink-0 text-xs font-mono text-accent border border-accent/30 px-3 py-1.5 rounded-sm hover:bg-blue-950/20 transition-colors"
+            className="shrink-0 text-xs font-mono text-blue-700 border border-accent/30 px-3 py-1.5 rounded-sm hover:bg-blue-950/20 transition-colors"
           >
             Simulate
           </button>

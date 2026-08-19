@@ -30,34 +30,34 @@ const disruptionTypes = [
 const severityColors: Record<string, string> = {
   critical: 'border-l-status-critical text-status-critical',
   high:     'border-l-status-warning text-status-warning',
-  medium:   'border-l-accent text-accent',
+  medium:   'border-l-accent text-blue-700',
   low:      'border-l-status-healthy text-status-healthy',
 };
 const severityBg: Record<string, string> = {
-  critical: 'bg-red-950/20',
-  high:     'bg-amber-950/20',
-  medium:   'bg-blue-950/20',
-  low:      'bg-green-950/20',
+  critical: 'bg-red-500/10',
+  high:     'bg-amber-500/10',
+  medium:   'bg-blue-500/10',
+  low:      'bg-emerald-500/10',
 };
 
 function ImpactNodeCard({ node, index }: { node: ImpactNode; index: number }) {
   return (
-    <div className={`border-l-2 pl-3 py-2 rounded-sm ${severityColors[node.severity]} ${severityBg[node.severity]} pr-3`}>
+    <div className={`border-l-4 pl-4 py-3 rounded-lg ${severityColors[node.severity]} ${severityBg[node.severity]} pr-3`}>
       <div className="flex justify-between items-start">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-mono text-text-tertiary uppercase">{node.node_type}</span>
-            <span className="text-xs font-mono text-text-tertiary">#{index + 1}</span>
+            <span className="text-xs font-mono text-stone-500 uppercase">{node.node_type}</span>
+            <span className="text-xs font-mono text-stone-500">#{index + 1}</span>
           </div>
-          <h4 className="text-sm font-semibold text-text-primary mt-0.5">{node.node_name}</h4>
-          <p className="text-xs text-text-secondary mt-1 leading-relaxed">{node.reason}</p>
+          <h4 className="text-sm font-semibold text-stone-900 mt-0.5">{node.node_name}</h4>
+          <p className="text-xs text-stone-700 mt-1 leading-relaxed">{node.reason}</p>
         </div>
         <div className="text-right ml-3 shrink-0">
           {node.financial_impact > 0 && (
             <div className="text-xs font-mono text-status-critical">₹{node.financial_impact.toLocaleString('en-IN')}</div>
           )}
           {node.delay_hours > 0 && (
-            <div className="text-xs font-mono text-text-secondary mt-0.5">{node.delay_hours.toFixed(1)}h delay</div>
+            <div className="text-xs font-mono text-stone-700 mt-0.5">{node.delay_hours.toFixed(1)}h delay</div>
           )}
           {node.production_loss_hours > 0 && (
             <div className="text-xs font-mono text-status-warning mt-0.5">{node.production_loss_hours.toFixed(1)}h downtime</div>
@@ -79,45 +79,45 @@ function RecoveryOptionsPanel({ options }: { options: RecoveryOption[] }) {
   return (
     <div>
       <div className="flex items-center gap-2 mb-3">
-        <h3 className="text-xs font-mono uppercase tracking-wider text-text-secondary">Recovery Options</h3>
-        <span className="text-xs text-text-tertiary">— OR-Tools CP-SAT Optimized</span>
+        <h3 className="text-xs font-semibold uppercase tracking-wider text-stone-700">Recovery Options</h3>
+        <span className="text-xs text-stone-500 font-medium">— OR-Tools CP-SAT Optimized</span>
       </div>
-      <div className="space-y-2">
+      <div className="space-y-3">
         {options.map((opt) => (
           <div key={opt.option_type}
-               className={`border rounded-sm p-3 transition-colors ${
+               className={`border-2 rounded-xl p-4 transition-colors ${
                  opt.recommended
-                   ? 'border-accent bg-blue-950/20'
+                   ? 'border-accent bg-accent/5'
                    : opt.feasible
-                   ? 'border-border bg-surface-2'
-                   : 'border-border bg-surface-1 opacity-50'
+                   ? 'border-white/50 bg-white/40'
+                   : 'border-white/30 bg-white/20 opacity-50'
                }`}>
-            <div className="flex justify-between items-start mb-1.5">
+            <div className="flex justify-between items-start mb-2">
               <div className="flex items-center gap-2">
                 {opt.recommended && (
-                  <span className="text-xs font-mono text-accent border border-accent/40 px-1.5 py-0.5 rounded-sm">
+                  <span className="text-[10px] font-bold text-blue-700 border border-accent/40 bg-accent/10 px-2 py-0.5 rounded uppercase tracking-wider">
                     Recommended
                   </span>
                 )}
-                <span className="text-xs font-mono text-text-tertiary">
+                <span className="text-xs font-semibold text-stone-500 uppercase">
                   {optionTypeLabel[opt.option_type]}
                 </span>
               </div>
-              <span className={`text-sm font-mono ${opt.option_type === 'do_nothing' ? 'text-status-critical' : 'text-text-primary'}`}>
+              <span className={`text-base font-bold font-mono ${opt.option_type === 'do_nothing' ? 'text-status-critical' : 'text-stone-900'}`}>
                 ₹{opt.cost.toLocaleString('en-IN')}
               </span>
             </div>
-            <h4 className="text-sm font-medium text-text-primary">{opt.name}</h4>
-            <p className="text-xs text-text-secondary mt-1 mb-2">{opt.description}</p>
-            <div className="flex gap-4 text-xs">
-              <span className="font-mono text-text-secondary">Recovery: <span className="text-text-primary">{opt.recovery_quality_pct}%</span></span>
-              <span className="font-mono text-text-secondary">ETA +<span className="text-status-healthy">{opt.lead_time_improvement_hours.toFixed(0)}h</span></span>
+            <h4 className="text-base font-bold text-stone-900">{opt.name}</h4>
+            <p className="text-sm text-stone-700 mt-1 mb-3">{opt.description}</p>
+            <div className="flex gap-4 text-xs font-medium">
+              <span className="text-stone-700">Recovery: <span className="text-stone-900 font-bold">{opt.recovery_quality_pct}%</span></span>
+              <span className="text-stone-700">ETA +<span className="text-status-healthy font-bold">{opt.lead_time_improvement_hours.toFixed(0)}h</span></span>
               {opt.expected_savings > 0 && (
-                <span className="font-mono text-text-secondary">Saves: <span className="text-status-healthy">₹{opt.expected_savings.toLocaleString('en-IN')}</span></span>
+                <span className="text-stone-700">Saves: <span className="text-status-healthy font-bold">₹{opt.expected_savings.toLocaleString('en-IN')}</span></span>
               )}
             </div>
             {!opt.feasible && (
-              <div className="text-xs text-text-tertiary mt-1.5 italic">Not feasible: insufficient lead time</div>
+              <div className="text-xs text-stone-500 mt-2 italic">Not feasible: insufficient lead time</div>
             )}
           </div>
         ))}
@@ -127,9 +127,9 @@ function RecoveryOptionsPanel({ options }: { options: RecoveryOption[] }) {
       {options.find(o => o.recommended) && (() => {
         const rec = options.find(o => o.recommended)!;
         return (
-          <div className="mt-3 border border-border rounded-sm p-3 bg-surface-1">
-            <div className="text-xs font-mono text-text-tertiary uppercase tracking-wider mb-2">Why This Action</div>
-            <ul className="space-y-1 text-xs text-text-secondary">
+          <div className="mt-4 border border-white/50 rounded-xl p-4 bg-white/30">
+            <div className="text-xs font-mono text-stone-500 uppercase tracking-wider mb-2">Why This Action</div>
+            <ul className="space-y-1 text-xs text-stone-700">
               <li className="flex items-start gap-1.5">
                 <span className="text-status-healthy mt-0.5">›</span>
                 Costs {Math.round((1 - rec.cost / options.find(o => o.option_type === 'do_nothing')!.cost) * 100)}% less than accepting the delay
@@ -201,16 +201,16 @@ export default function SimulationPage() {
     <div className="flex gap-6 h-full max-w-[1400px]">
       {/* Left: Configuration Panel */}
       <div className="w-80 shrink-0 space-y-5">
-        <div className="bg-surface-2 border border-border rounded-sm p-4">
-          <h2 className="text-xs font-mono uppercase tracking-widest text-text-tertiary mb-4">Disruption Configuration</h2>
+        <div className="glass-panel border border-white/40 rounded-xl p-5 shadow-sm">
+          <h2 className="text-xs font-semibold uppercase tracking-widest text-stone-700 mb-5">Disruption Configuration</h2>
 
           {/* Supplier Select */}
-          <div className="mb-4">
-            <label className="block text-xs text-text-secondary mb-1.5 font-mono">Source Supplier</label>
+          <div className="mb-5">
+            <label className="block text-xs text-stone-700 mb-2 font-semibold">Source Supplier</label>
             <select
               value={store.selectedSupplierId || ''}
               onChange={e => store.setSelectedSupplier(Number(e.target.value))}
-              className="w-full bg-surface-1 border border-border rounded-sm px-3 py-2 text-sm text-text-primary font-mono focus:outline-none focus:border-accent"
+              className="w-full bg-white/40 border border-white/50 rounded-lg px-3 py-2 text-sm text-stone-900 focus:outline-none focus:border-accent shadow-sm"
             >
               <option value="">Select supplier...</option>
               {(suppliers || []).map((s: any) => (
@@ -222,7 +222,7 @@ export default function SimulationPage() {
             {s03 && !store.selectedSupplierId && (
               <button
                 onClick={() => store.setSelectedSupplier(s03.id)}
-                className="mt-1.5 text-xs text-accent font-mono hover:underline"
+                className="mt-2 text-xs text-blue-700 font-semibold hover:underline"
               >
                 Load flagship demo (S03 — Motherson Sumi)
               </button>
@@ -230,17 +230,17 @@ export default function SimulationPage() {
           </div>
 
           {/* Disruption Type */}
-          <div className="mb-4">
-            <label className="block text-xs text-text-secondary mb-1.5 font-mono">Disruption Type</label>
-            <div className="grid grid-cols-2 gap-1.5">
+          <div className="mb-5">
+            <label className="block text-xs text-stone-700 mb-2 font-semibold">Disruption Type</label>
+            <div className="grid grid-cols-2 gap-2">
               {disruptionTypes.map(dt => (
                 <button
                   key={dt.value}
                   onClick={() => store.setDisruptionType(dt.value)}
-                  className={`text-xs py-1.5 px-2 rounded-sm border transition-colors font-mono text-left ${
+                  className={`text-xs py-2 px-2 rounded-lg border transition-all text-left ${
                     store.disruptionType === dt.value
-                      ? 'border-accent bg-blue-950/30 text-accent'
-                      : 'border-border bg-surface-1 text-text-secondary hover:border-border/80'
+                      ? 'border-accent bg-accent text-white shadow-md'
+                      : 'border-white/50 bg-white/40 text-stone-700 hover:border-white'
                   }`}
                 >
                   {dt.label}
@@ -250,10 +250,10 @@ export default function SimulationPage() {
           </div>
 
           {/* Delay Hours Slider */}
-          <div className="mb-5">
+          <div className="mb-6">
             <div className="flex justify-between items-center mb-2">
-              <label className="text-xs text-text-secondary font-mono">Delay Duration</label>
-              <span className="text-sm font-mono text-text-primary">{store.delayHours}h</span>
+              <label className="text-xs text-stone-700 font-semibold">Delay Duration</label>
+              <span className="text-sm font-bold text-stone-900">{store.delayHours}h</span>
             </div>
             <input
               type="range" min={0} max={72} step={1}
@@ -261,7 +261,7 @@ export default function SimulationPage() {
               onChange={e => store.setDelayHours(Number(e.target.value))}
               className="w-full accent-accent"
             />
-            <div className="flex justify-between text-xs text-text-tertiary font-mono mt-1">
+            <div className="flex justify-between text-[10px] text-stone-500 font-bold mt-1">
               <span>0h</span><span>36h</span><span>72h</span>
             </div>
           </div>
@@ -270,33 +270,33 @@ export default function SimulationPage() {
           <button
             onClick={handleRunSimulation}
             disabled={!store.selectedSupplierId || store.isRunning}
-            className="w-full py-2.5 bg-accent hover:bg-blue-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-medium rounded-sm transition-colors"
+            className="w-full py-3 bg-accent hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-bold rounded-lg shadow-md transition-all"
           >
             {store.isRunning ? 'Running disruption simulation...' : 'Run Simulation'}
           </button>
 
           {store.result && (
-            <button onClick={store.reset} className="w-full mt-2 py-2 text-xs text-text-secondary border border-border rounded-sm hover:bg-surface-3 transition-colors">
+            <button onClick={store.reset} className="w-full mt-3 py-2 text-xs font-semibold text-stone-700 border border-white/50 bg-white/20 rounded-lg hover:bg-white/40 transition-colors">
               Reset
             </button>
           )}
         </div>
 
         {/* Scenarios Quick Load */}
-        <div className="bg-surface-2 border border-border rounded-sm p-4">
-          <h3 className="text-xs font-mono uppercase tracking-widest text-text-tertiary mb-3">Scenario Library</h3>
-          <div className="space-y-1.5">
+        <div className="glass-panel border border-white/40 rounded-xl p-5 shadow-sm">
+          <h3 className="text-xs font-semibold uppercase tracking-widest text-stone-700 mb-4">Scenario Library</h3>
+          <div className="space-y-2">
             {(scenarios || []).slice(0, 4).map((sc: any) => (
               <button
                 key={sc.id}
                 onClick={() => loadScenario(sc)}
-                className="w-full text-left text-xs p-2 rounded-sm border border-border hover:bg-surface-3 transition-colors"
+                className="w-full text-left text-xs p-3 rounded-lg border border-white/40 bg-white/30 hover:bg-white/60 transition-colors"
               >
-                <div className="text-text-primary font-medium">{sc.name}</div>
-                <div className="text-text-tertiary mt-0.5 truncate">{sc.description}</div>
+                <div className="text-stone-900 font-bold">{sc.name}</div>
+                <div className="text-stone-500 mt-1 truncate">{sc.description}</div>
               </button>
             ))}
-            <button onClick={() => navigate('/scenarios')} className="text-xs text-accent font-mono">
+            <button onClick={() => navigate('/scenarios')} className="text-xs text-blue-700 font-semibold mt-2 inline-block hover:underline">
               View all scenarios
             </button>
           </div>
@@ -306,15 +306,15 @@ export default function SimulationPage() {
       {/* Right: Results Panel */}
       <div className="flex-1 min-w-0 overflow-y-auto space-y-5">
         {!store.result && !store.isRunning && (
-          <div className="flex flex-col items-center justify-center h-64 bg-surface-2 border border-border rounded-sm">
-            <div className="text-text-tertiary text-sm mb-2">No simulation active</div>
-            <div className="text-text-tertiary text-xs font-mono">
+          <div className="flex flex-col items-center justify-center h-64 glass-panel border border-white/40 rounded-xl shadow-sm">
+            <div className="text-stone-900 font-semibold mb-2">No simulation active</div>
+            <div className="text-stone-700 text-sm">
               Configure a disruption and click Run Simulation
             </div>
             {s03 && (
               <button
                 onClick={() => { store.setSelectedSupplier(s03.id); store.setDelayHours(12); handleRunSimulation(); }}
-                className="mt-4 text-xs text-accent border border-accent/40 px-4 py-2 rounded-sm hover:bg-blue-950/30 transition-colors"
+                className="mt-5 text-xs text-blue-700 font-semibold border border-accent/40 px-4 py-2 rounded-lg hover:bg-white/40 transition-colors"
               >
                 Run flagship demo: S03 delay 12h
               </button>
@@ -323,50 +323,50 @@ export default function SimulationPage() {
         )}
 
         {store.isRunning && (
-          <div className="flex items-center gap-3 p-6 bg-surface-2 border border-border rounded-sm">
+          <div className="flex items-center gap-3 p-6 glass-panel border border-white/40 rounded-xl shadow-sm">
             <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-            <span className="text-sm text-text-secondary font-mono">Running disruption simulation...</span>
+            <span className="text-sm text-stone-900 font-semibold">Running disruption simulation...</span>
           </div>
         )}
 
         {store.result && (
           <>
             {/* Summary Banner */}
-            <div className="bg-surface-2 border border-status-critical/30 rounded-sm p-4">
+            <div className="glass-panel border-l-4 border-l-status-critical border border-white/40 rounded-xl p-5 shadow-md">
               <div className="flex justify-between items-start">
                 <div>
-                  <div className="text-xs font-mono text-text-tertiary uppercase tracking-wider mb-1">Simulation Complete</div>
-                  <h3 className="text-sm font-semibold text-text-primary">{store.result.summary}</h3>
+                  <div className="text-xs font-semibold text-stone-700 uppercase tracking-wider mb-2">Simulation Complete</div>
+                  <h3 className="text-base font-bold text-stone-900">{store.result.summary}</h3>
                 </div>
                 <div className="text-right">
-                  <div className="text-xs font-mono text-text-tertiary">Total Exposure</div>
-                  <div className="text-lg font-mono font-bold text-status-critical">
+                  <div className="text-xs font-semibold text-stone-700 uppercase tracking-wider">Total Exposure</div>
+                  <div className="text-xl font-mono font-bold text-status-critical mt-1">
                     ₹{store.result.total_financial_exposure.toLocaleString('en-IN')}
                   </div>
                 </div>
               </div>
-              <div className="flex gap-6 mt-3 text-xs font-mono">
-                <span className="text-text-secondary">Nodes affected: <span className="text-text-primary">{store.result.nodes_affected}</span></span>
-                <span className="text-text-secondary">Shipments at risk: <span className="text-text-primary">{store.result.shipments_affected}</span></span>
+              <div className="flex gap-6 mt-4 text-sm font-semibold">
+                <span className="text-stone-700">Nodes affected: <span className="text-stone-900">{store.result.nodes_affected}</span></span>
+                <span className="text-stone-700">Shipments at risk: <span className="text-stone-900">{store.result.shipments_affected}</span></span>
                 {store.result.stockout_hours !== null && (
-                  <span className="text-text-secondary">First stockout in: <span className="text-status-critical">{store.result.stockout_hours?.toFixed(1)}h</span></span>
+                  <span className="text-stone-700">First stockout in: <span className="text-status-critical">{store.result.stockout_hours?.toFixed(1)}h</span></span>
                 )}
                 {store.result.production_at_risk && (
-                  <span className="text-status-warning">Production at risk</span>
+                  <span className="text-status-warning bg-status-warning/10 px-2 py-0.5 rounded">Production at risk</span>
                 )}
               </div>
             </div>
 
             {/* Impact Chain */}
-            <div className="bg-surface-2 border border-border rounded-sm p-4">
-              <h3 className="text-xs font-mono uppercase tracking-wider text-text-tertiary mb-4">Disruption Propagation Chain</h3>
+            <div className="glass-panel border border-white/40 rounded-xl p-5 shadow-sm">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-stone-700 mb-4">Disruption Propagation Chain</h3>
               <div className="space-y-2">
                 {store.result.impact_chain.map((node, i) => (
                   <div key={i}>
                     <ImpactNodeCard node={node} index={i} />
                     {i < store.result!.impact_chain.length - 1 && (
-                      <div className="flex justify-start pl-5 py-1">
-                        <div className="w-px h-3 bg-border" />
+                      <div className="flex justify-start pl-6 py-1">
+                        <div className="w-0.5 h-4 bg-white/60" />
                       </div>
                     )}
                   </div>
@@ -379,22 +379,22 @@ export default function SimulationPage() {
               <button
                 onClick={handleOptimize}
                 disabled={!store.result.simulation_run_id || store.isOptimizing}
-                className="w-full py-3 border border-accent text-accent hover:bg-blue-950/30 disabled:opacity-40 text-sm font-medium rounded-sm transition-colors font-mono"
+                className="w-full py-4 glass-panel border border-accent text-blue-700 hover:bg-white/60 disabled:opacity-40 text-sm font-bold rounded-xl shadow-sm transition-all"
               >
                 {store.isOptimizing ? 'Calculating recovery options...' : 'Optimize Recovery'}
               </button>
             )}
 
             {store.isOptimizing && (
-              <div className="flex items-center gap-3 p-4 bg-surface-2 border border-border rounded-sm">
+              <div className="flex items-center gap-3 p-5 glass-panel border border-white/40 rounded-xl shadow-sm">
                 <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-                <span className="text-sm text-text-secondary font-mono">Calculating recovery options...</span>
+                <span className="text-sm text-stone-900 font-semibold">Calculating recovery options...</span>
               </div>
             )}
 
             {/* Recovery Options */}
             {store.recoveryOptions.length > 0 && store.result.simulation_run_id && (
-              <div className="bg-surface-2 border border-border rounded-sm p-4">
+              <div className="glass-panel border border-white/40 rounded-xl p-5 shadow-sm">
                 <RecoveryOptionsPanel options={store.recoveryOptions} />
               </div>
             )}
